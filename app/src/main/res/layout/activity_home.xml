@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".activity.HomeActivity"
+    tools:ignore="contentDescription">
+<com.videoMaking.playVideo.VideoPlayerRecyclerView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/recycler_view"
+    android:orientation="vertical"/>
+<ImageView
+    android:id="@+id/background_image"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentEnd="true"
+    android:background="@color/white_color"
+    android:scaleType="fitXY"
+    android:src="@drawable/ic_no_video"
+    android:visibility="gone"
+    tools:visibility="visible" />
+
+<ImageView
+    android:id="@+id/permission_image"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
+    android:layout_alignParentEnd="true"
+    android:contentDescription="@string/todo"
+    android:scaleType="fitXY"
+    android:src="@drawable/permissionimg"
+    android:visibility="gone" />
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/spacing_large"
+    android:layout_marginTop="@dimen/spacing_large"
+    android:layout_marginEnd="@dimen/spacing_large"
+    android:background="@drawable/shape_top_list_item"
+    android:orientation="horizontal"
+    android:weightSum="3">
+
+    <TextView
+        android:id="@+id/tv_friend"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/friends"
+        android:textColor="@color/white_color" />
+
+    <TextView
+        android:id="@+id/tv_popular"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/popular"
+        android:textColor="@drawable/tabitem_selection_color" />
+
+    <TextView
+        android:id="@+id/tv_collab"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="@string/collab"
+        android:textColor="@drawable/tabitem_selection_color" />
+</LinearLayout>
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_above="@+id/relative_recycler">
+
+    <ImageView
+        android:id="@+id/like_active"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:contentDescription="TODO"
+        android:src="@drawable/ic_feed_like_active" />
+
+    <TextView
+        android:id="@+id/tv_number_likes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/like_active"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="end"
+        android:layout_marginEnd="@dimen/spacing_large"
+        android:text="@string/_122k"
+        android:textColor="@color/white_color" />
+
+    <ImageView
+        android:id="@+id/feed_reuse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_number_likes"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="end"
+        android:src="@drawable/ic_feed_reuse" />
+
+    <TextView
+        android:id="@+id/tv_number_shares"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/feed_reuse"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="end"
+        android:layout_marginEnd="@dimen/spacing_large"
+        android:text="@string/_122k"
+        android:textColor="@color/white_color" />
+
+    <ImageView
+        android:id="@+id/feed_option"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_number_shares"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="end"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:layout_marginEnd="@dimen/spacing_large"
+        android:src="@drawable/ic_feed_options" />
+</RelativeLayout>
+
+<RelativeLayout
+    android:id="@+id/relative_recycler"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_above="@id/bottom_navigation">
+
+    <ImageView
+        android:id="@+id/camera_open"
+        android:layout_width="@dimen/size_camera_open"
+        android:layout_height="@dimen/size_camera_open"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/spacing_16"
+        android:layout_marginBottom="@dimen/spacing_16"
+        android:background="@drawable/shape_open_camera"
+        android:padding="@dimen/spacing_12"
+        android:src="@drawable/ic_feed_add_comment" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycles_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_large"
+        android:layout_toEndOf="@+id/camera_open"
+        android:scrollbars="vertical" />
+</RelativeLayout>
+
+<android.support.design.widget.BottomNavigationView
+    android:id="@+id/bottom_navigation"
+    android:layout_width="match_parent"
+    android:layout_height="?actionBarSize"
+    android:layout_alignParentBottom="true"
+    android:layout_gravity="bottom"
+    android:layout_marginBottom="-8dp"
+    app:itemBackground="@drawable/menu_item_bg"
+    app:itemHorizontalTranslationEnabled="true"
+    app:menu="@menu/bottom_navigation" />
+
+</RelativeLayout>

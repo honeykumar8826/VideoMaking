@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">VideoMaking</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="username">Username</string>
+    <string name="name">Name</string>
+    <string name="likes">Likes</string>
+    <string name="_287">287</string>
+    <string name="_122k">122k</string>
+    <string name="reuse">Reuse</string>
+    <string name="message_need_permission">Need Permissions</string>
+    <string name="message_permission">This app needs permission to use this feature. You can grant them in app settings.</string>
+    <string name="title_go_to_setting">GOTO SETTINGS</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+
+    <string name="play_stop">Play or Stop</string>
+    <!--empty state-->
+    <string name="empty_screen">Oops!! An unexpected error occurred</string>
+    <string name="please_retry">Please retry after sometime</string>
+    <string name="retry">Retry</string>
+    <string name="friends">FRIENDS</string>
+    <string name="popular">POPULAR</string>
+    <string name="collab">COLLAB</string>
+    <string name="todo">TODO</string>
+    <string name="_7s">7s</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="audio_permission">Record Audio permission is required</string>
+    <string name="audio_permission_not_grant">Record Audio Permission not granted</string>
+    <string name="storage_permission">Storage permission is required to play Video</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="add">Add</string>
+    <string name="navigation">Navigation</string>
+    <string name="profile">Profile</string>
+    <string name="wrong_selection">Wrong selection</string>
+    <string name="press_again_exit">Press again to exit</string>
+    <string name="friend_click">Friend button is click</string>
+    <string name="popular_click">Popular button is click</string>
+    <string name="collab_click">Collab button is click</string>
+    <string name="load_data">Load data</string>
+    <string name="click_save">Click to save video!</string>
+
+</resources>
