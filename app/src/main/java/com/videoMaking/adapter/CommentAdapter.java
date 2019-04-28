@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 
 public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentViewHolder> {
     private final Context context;
-    private List<CommentModal> commentModalList;
+    private final List<CommentModal> commentModalList;
 
     public CommentAdapter(Context context, List<CommentModal> commentModalList) {
         this.context = context;

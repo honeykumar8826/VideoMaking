@@ -11,7 +11,6 @@ import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
 import android.os.CountDownTimer;
-import android.os.Environment;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -44,6 +43,7 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
     private final String[] permissionList = {Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA
     };
+    private final String FOLDER_NAME="ShortClipVideo";
     private Camera mCamera;
     private ImageView openCamera;
     private SurfaceHolder mHolder;
@@ -53,9 +53,8 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
     private boolean isPlayVideo = false;
     private VideoView mVideoView;
     private String mOutputFilePath;
-    private String currentPath;
     private TextView remainSecond;
-    private ImageView playVIdeo;
+    private ImageView playVideo;
 
 
     public Camera getCameraInstance() {
@@ -72,7 +71,7 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_record);
         init();
-        externalStorgaePermission();
+        externalStoragePermission();
 
         // Create our Preview view and set it as the content of our activity.
         mHolder = mSurfaceView.getHolder();
@@ -97,7 +96,7 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
         remainSecond = findViewById(R.id.remain_seconds);
         mSurfaceView = findViewById(R.id.surfaceView);
         openCamera = findViewById(R.id.button_capture);
-        playVIdeo = findViewById(R.id.mPlayVideo);
+        playVideo = findViewById(R.id.mPlayVideo);
         mCamera = getCameraInstance();
     }
 
@@ -111,14 +110,14 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
         mMediaRecorder.reset();
 
         if (mVideoView.getVisibility() == View.GONE) {
-            playVIdeo.setVisibility(View.VISIBLE);
+            playVideo.setVisibility(View.VISIBLE);
             mVideoView.setVideoPath(mOutputFilePath);
-            mVideoView.setOnCompletionListener(mp -> playVIdeo.setVisibility(View.VISIBLE));
-            playVIdeo.setOnClickListener(v -> {
+            mVideoView.setOnCompletionListener(mp -> playVideo.setVisibility(View.VISIBLE));
+            playVideo.setOnClickListener(v -> {
                 RelativeLayout relativeLayout = findViewById(R.id.relative_bottom);
                 relativeLayout.setVisibility(View.GONE);
                 mVideoView.setVisibility(View.VISIBLE);
-                playVIdeo.setVisibility(View.GONE);
+                playVideo.setVisibility(View.GONE);
                 MediaController mediaController = new MediaController(this);
                 // mediaController.setAnchorView(mVideoView);
                 mVideoView.setMediaController(mediaController);
@@ -134,7 +133,7 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
             e.printStackTrace();
         }
     }
-    public void externalStorgaePermission() {
+    public void externalStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!hasPermissions(this, permissionList)) {
                 ActivityCompat.requestPermissions(this, permissionList, 10);
@@ -224,9 +223,8 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
                 .show();
     }
 
-    /**
+    /*
      * Check if this device has a camera.
-     *
      * @param context
      * @return
      */
@@ -308,12 +306,12 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
 
     private File createVideoFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
-        String fileName = "JPEG" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        String fileName = "MP4" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(FOLDER_NAME);
         File img = File.createTempFile(fileName, ".mp4", storageDir);
         //store the current path of the image for later use
-        currentPath = img.getAbsolutePath();
-        Log.i(TAG, "createImageFile: " + currentPath);
+        String currentPath = img.getAbsolutePath();
+       // Log.i(TAG, "createImageFile: " + currentPath);
         return img;
     }
 

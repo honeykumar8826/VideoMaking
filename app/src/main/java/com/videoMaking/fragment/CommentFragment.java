@@ -21,6 +21,8 @@ import com.videoMaking.animation.OnSwipeTouchListener;
 import com.videoMaking.modal.CommentModal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -51,7 +53,7 @@ public class CommentFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        getDialog().getWindow()
+        Objects.requireNonNull(getDialog().getWindow())
                 .setLayout(WindowManager.LayoutParams.MATCH_PARENT,
                         WindowManager.LayoutParams.MATCH_PARENT);
     }

@@ -1,18 +1,15 @@
 package com.videoMaking.modal;
 
 public class VideoInfo {
-    private int mId;
-    private String mTitle;
+   /* private int mId;
+    private String mTitle;*/
     private String mUrl;
 
-    public VideoInfo(String mCoverUrl) {
-        this.mCoverUrl = mCoverUrl;
-    }
 
     private String mCoverUrl;
-    private String mUserHandle;
+   /* private String mUserHandle;*/
 
-    public String getUserHandle() {
+/*    public String getUserHandle() {
         return mUserHandle;
     }
 
@@ -22,9 +19,9 @@ public class VideoInfo {
 
     public int getId() {
         return mId;
-    }
+    }*/
 
-    public void setId(int mId) {
+  /*  public void setId(int mId) {
         this.mId = mId;
     }
 
@@ -34,7 +31,7 @@ public class VideoInfo {
 
     public void setTitle(String mTitle) {
         this.mTitle = mTitle;
-    }
+    }*/
 
     public String getUrl() {
         return mUrl;

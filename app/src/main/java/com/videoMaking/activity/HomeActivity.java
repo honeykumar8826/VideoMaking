@@ -46,6 +46,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,8 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     private static final String TAG = "HomeActivity";
     private final String[] permissionList = {Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA};
-    ImageView cameraOpen;
+    private final String INTERNAL_PATH = "/storage/emulated/0/Android/data/com.videoMaking/files";
+    private final String FOLDER_NAME = "/ShortClipVideo";
     @BindView(R.id.like_active)
     ImageView likeActive;
     @BindView(R.id.feed_reuse)
@@ -82,15 +84,15 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     ImageView backgroundImg;
     @BindView(R.id.recycles_profile)
     RecyclerView recyclerViewNews;
+    private VideoPlayerRecyclerAdapter mAdapter;
     private VideoPlayerRecyclerView mRecyclerView;
-    private List<VideoInfo> videoInfoList;
+    private List<VideoInfo> videoInfoList = new ArrayList<>();
     private ImageView permissionImg;
     private BottomNavigationView bottomNavigationView;
     private FragmentManager fragmentManager;
     private Boolean isFriend = true;
     private Boolean isPopular = false;
     private Boolean isCollab = false;
-    private boolean firstTime = true;
     private int isPermissionGrant = 0;
     private boolean isExist = false;
 
@@ -99,14 +101,13 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         setInItId();
-        externalStorgaePermission();
+        externalStoragePermission();
         // permission code for external storage
         if (isPermissionGrant == 1) {
-            Log.i(TAG, "onCreate:1 ");
             ButterKnife.bind(this);
             bottomNavigationView.setOnNavigationItemSelectedListener(this);
-            //shared preference data
-            // getVideoListFromSharedPref();
+            getAllVideoList();
+            initRecyclerView();
             if (isNetworkConnected()) {// for News Api Result
                 callNewsApi();
                 // Toast.makeText(context, "internet connected", Toast.LENGTH_SHORT).show();
@@ -114,8 +115,21 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 Toast.makeText(HomeActivity.this, "internet disconnected", Toast.LENGTH_SHORT).show();
             }
         }
-        addList();
-        initRecyclerView();
+    }
+
+    private List<VideoInfo> getAllVideoList() {
+        File folder = new File(INTERNAL_PATH + FOLDER_NAME);
+        File[] listOfFiles = folder.listFiles();
+        if (listOfFiles != null) {
+            for (File listOfFile : listOfFiles) {
+                VideoInfo videoInfo = new VideoInfo();
+                videoInfo.setUrl(listOfFile.getAbsolutePath());
+                videoInfoList.add(videoInfo);
+            }
+        } else {
+            backgroundImg.setVisibility(View.VISIBLE);
+        }
+        return videoInfoList;
     }
 
     private void setInItId() {
@@ -128,20 +142,12 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
     }
-
-    private void addList() {
-        videoInfoList = new ArrayList<>();
-        videoInfoList.add(new VideoInfo("https://s3.ca-central-1.amazonaws.com/codingwithmitch/media/VideoPlayerRecyclerView/REST+API%2C+Retrofit2%2C+MVVM+Course+SUMMARY.png"));
-        videoInfoList.add(new VideoInfo("https://s3.ca-central-1.amazonaws.com/codingwithmitch/media/VideoPlayerRecyclerView/mvvm+and+livedata.png"));
-        videoInfoList.add(new VideoInfo("https://s3.ca-central-1.amazonaws.com/codingwithmitch/media/VideoPlayerRecyclerView/Swiping+Views+with+a+ViewPager.png"));
-    }
-
     private void initRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setMediaObjects(videoInfoList);
-        VideoPlayerRecyclerAdapter adapter = new VideoPlayerRecyclerAdapter(videoInfoList, initGlide());
-        mRecyclerView.setAdapter(adapter);
+        mAdapter = new VideoPlayerRecyclerAdapter(videoInfoList, initGlide());
+        mRecyclerView.setAdapter(mAdapter);
         PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
         pagerSnapHelper.attachToRecyclerView(mRecyclerView);
     }
@@ -155,7 +161,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 .setDefaultRequestOptions(options);
     }
 
-    public void externalStorgaePermission() {
+    public void externalStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!hasPermissions(HomeActivity.this, permissionList)) {
                 ActivityCompat.requestPermissions(HomeActivity.this, permissionList, 10);
@@ -322,6 +328,27 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 // swipeRefreshLayout.setRefreshing(false);
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG, "onPause: ");
+        mRecyclerView.onPausePlayer();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        videoInfoList.clear();
+        List<VideoInfo> getVideoList = getAllVideoList();
+        Log.i(TAG, "onResume: video list " + getVideoList + "adapter" + mAdapter);
+        if (getVideoList != null && mAdapter != null) {
+            Log.i(TAG, "onResume: 2 " + getVideoList.size());
+            backgroundImg.setVisibility(View.GONE);
+            mAdapter.notifyDataSetChanged();
+            mRecyclerView.onRestartPlayer();
+        }
     }
 
     @Override

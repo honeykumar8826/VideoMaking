@@ -15,17 +15,19 @@ public class ShareReuseModal {
         return imgUrl;
     }
 
+/*
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
     }
+*/
 
     public String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName) {
+  /*  public void setUserName(String userName) {
         this.userName = userName;
-    }
+    }*/
 
     public String getName() {
         return name;
