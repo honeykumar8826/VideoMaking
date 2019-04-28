@@ -88,9 +88,6 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     private ImageView permissionImg;
     private BottomNavigationView bottomNavigationView;
     private FragmentManager fragmentManager;
-    private Boolean isFriend = true;
-    private Boolean isPopular = false;
-    private Boolean isCollab = false;
     private int isPermissionGrant = 0;
     private boolean isExist = false;
 
@@ -112,7 +109,23 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             } else {
                 Toast.makeText(HomeActivity.this, "internet disconnected", Toast.LENGTH_SHORT).show();
             }
+        } else {
+            if (isPermissionGrant == 0) {
+                permissionImg.setVisibility(View.GONE);
+                /*because first time video will not play if it recyclerView will not initialize*/
+                initRecyclerView();
+                // code will execute after the permission
+                Log.i(TAG, "permission else part ");
+                //  ButterKnife.bind(this);
+                // bottomNavigationView.setOnNavigationItemSelectedListener(this);
+            /*    if (isNetworkConnected()) {// for News Api Result
+                    callNewsApi();
+                } else {
+                    Toast.makeText(HomeActivity.this, "internet disconnected", Toast.LENGTH_SHORT).show();
+                }*/
+            }
         }
+
     }
 
     private List<VideoInfo> getAllVideoList() {
@@ -124,6 +137,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             for (File listOfFile : listOfFiles) {
                 VideoInfo videoInfo = new VideoInfo();
                 videoInfo.setUrl(listOfFile.getAbsolutePath());
+                videoInfo.setCoverUrl("");
                 videoInfoList.add(videoInfo);
             }
         } else {
@@ -136,12 +150,14 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         mRecyclerView = findViewById(R.id.recycler_view);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         permissionImg = findViewById(R.id.permission_image);
+        backgroundImg = findViewById(R.id.background_image);
     }
 
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
     }
+
     private void initRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -161,6 +177,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 .setDefaultRequestOptions(options);
     }
 
+    //
     public void externalStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!hasPermissions(HomeActivity.this, permissionList)) {
@@ -169,6 +186,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 isPermissionGrant = 1;
             }
         } else {
+            isPermissionGrant = 1;
             Toast.makeText(this, "permission automatically granted", Toast.LENGTH_SHORT).show();
         }
     }
@@ -342,9 +360,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         super.onResume();
         videoInfoList.clear();
         List<VideoInfo> getVideoList = getAllVideoList();
-        Log.i(TAG, "onResume: video list " + getVideoList + "adapter" + mAdapter);
         if (getVideoList != null && mAdapter != null) {
-            Log.i(TAG, "onResume: 2 " + getVideoList.size());
             backgroundImg.setVisibility(View.GONE);
             mAdapter.notifyDataSetChanged();
             mRecyclerView.onRestartPlayer();
@@ -363,30 +379,22 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_friend:
-                if (isFriend) {
-                    friend.setTextColor(Color.WHITE);
-                    popular.setTextColor(Color.GRAY);
-                    collab.setTextColor(Color.GRAY);
-                    Toast.makeText(HomeActivity.this, getString(R.string.friend_click), Toast.LENGTH_SHORT).show();
-                }
+                friend.setTextColor(Color.WHITE);
+                popular.setTextColor(Color.GRAY);
+                collab.setTextColor(Color.GRAY);
+                Toast.makeText(HomeActivity.this, getString(R.string.friend_click), Toast.LENGTH_SHORT).show();
                 break;
             case R.id.tv_popular:
-                isPopular = true;
-                if (isPopular) {
-                    popular.setTextColor(Color.WHITE);
-                    friend.setTextColor(Color.GRAY);
-                    collab.setTextColor(Color.GRAY);
-                    Toast.makeText(HomeActivity.this, getString(R.string.popular_click), Toast.LENGTH_SHORT).show();
-                }
+                popular.setTextColor(Color.WHITE);
+                friend.setTextColor(Color.GRAY);
+                collab.setTextColor(Color.GRAY);
+                Toast.makeText(HomeActivity.this, getString(R.string.popular_click), Toast.LENGTH_SHORT).show();
                 break;
             case R.id.tv_collab:
-                isCollab = true;
-                if (isCollab) {
-                    collab.setTextColor(Color.WHITE);
-                    popular.setTextColor(Color.GRAY);
-                    friend.setTextColor(Color.GRAY);
-                    Toast.makeText(HomeActivity.this, getString(R.string.collab_click), Toast.LENGTH_SHORT).show();
-                }
+                collab.setTextColor(Color.WHITE);
+                popular.setTextColor(Color.GRAY);
+                friend.setTextColor(Color.GRAY);
+                Toast.makeText(HomeActivity.this, getString(R.string.collab_click), Toast.LENGTH_SHORT).show();
                 break;
             case R.id.camera_open:
                 Intent openVideoPage = new Intent(HomeActivity.this, VideoRecordActivity.class);
@@ -406,7 +414,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 startActivity(sharingIntent);
                 break;
             default:
-                Toast.makeText(HomeActivity.this, "wrong selection", Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeActivity.this, R.string.wrong_selection, Toast.LENGTH_SHORT).show();
                 break;
         }
     }

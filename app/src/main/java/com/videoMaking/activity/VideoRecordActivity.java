@@ -37,14 +37,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import butterknife.ButterKnife;
 
 public class VideoRecordActivity extends AppCompatActivity implements SurfaceHolder.Callback {
     private static final String TAG = VideoRecordActivity.class.getName();
     private final String[] permissionList = {Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA
-    };
-    private final String FOLDER_NAME="ShortClipVideo";
+            Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA};
+    private final String FOLDER_NAME = "ShortClipVideo";
     private Camera mCamera;
     private ImageView openCamera;
     private SurfaceHolder mHolder;
@@ -56,7 +54,7 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
     private String mOutputFilePath;
     private TextView remainSecond;
     private ImageView playVideo;
-    private  CountDownTimer waitTimer;
+    private CountDownTimer waitTimer;
 
 
     public Camera getCameraInstance() {
@@ -140,6 +138,7 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
             e.printStackTrace();
         }
     }
+
     public void externalStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!hasPermissions(this, permissionList)) {
@@ -240,6 +239,7 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
             // this device has a camera
             return true;
         } else {
+            Toast.makeText(context, getString(R.string.camera_check), Toast.LENGTH_SHORT).show();
             // no camera on this device
             return false;
         }
@@ -248,9 +248,9 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         try {
-            if (mMediaRecorder == null) {
+        /*    if (mMediaRecorder == null) {
                 mMediaRecorder = new MediaRecorder();
-            }
+            }*/
             mCamera.setDisplayOrientation(90);
             mCamera.setPreviewDisplay(mHolder);
             mCamera.startPreview();
@@ -288,7 +288,7 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         mCurrentFile = createVideoFile();
         mMediaRecorder.setOutputFile(mCurrentFile.getAbsolutePath());
-       // mMediaRecorder.setVideoEncodingBitRate(1280*720);
+        // mMediaRecorder.setVideoEncodingBitRate(1280*720);
         mMediaRecorder.setAudioEncodingBitRate(profile.audioBitRate);
         mMediaRecorder.setVideoFrameRate(30);
         mMediaRecorder.setVideoSize(profile.videoFrameWidth, profile.videoFrameHeight);
@@ -315,18 +315,19 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
     }
 
     private File createVideoFile() throws IOException {
+
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         String fileName = "MP4" + timeStamp + "_";
         File storageDir = getExternalFilesDir(FOLDER_NAME);
         File img = File.createTempFile(fileName, ".mp4", storageDir);
         //store the current path of the image for later use
         String currentPath = img.getAbsolutePath();
-         Log.i(TAG, "createImageFile: " + currentPath);
+        Log.i(TAG, "createImageFile: " + currentPath);
         return img;
     }
 
     private void startCountDownTimer() {
-         waitTimer = new CountDownTimer(8000, 1000) {
+        waitTimer = new CountDownTimer(8000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 remainSecond.setText(String.valueOf(millisUntilFinished / 1000));

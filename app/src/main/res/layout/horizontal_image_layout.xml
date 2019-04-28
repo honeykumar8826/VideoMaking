@@ -5,11 +5,11 @@
 
     <ImageView
         android:id="@+id/img_load"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
+        android:layout_width="@dimen/circular_img_size"
+        android:layout_height="@dimen/circular_img_size"
         android:layout_marginStart="@dimen/spacing_large"
         android:layout_marginTop="@dimen/spacing_large"
         android:contentDescription="@string/todo"
-        android:padding="4dp"
+        android:padding="@dimen/spacing_4"
         android:src="@drawable/placeholder" />
 </RelativeLayout>

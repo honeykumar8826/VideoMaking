@@ -11,7 +11,7 @@ import com.videoMaking.R;
 import com.videoMaking.modal.VideoInfo;
 
 public class VideoPlayerViewHolder extends RecyclerView.ViewHolder {
-   public FrameLayout media_container;
+    /*public FrameLayout media_container;*/
     public ImageView thumbnail;
     public ProgressBar progressBar;
     public View parent;
@@ -20,7 +20,7 @@ public class VideoPlayerViewHolder extends RecyclerView.ViewHolder {
     public VideoPlayerViewHolder(@NonNull View itemView) {
         super(itemView);
         parent =itemView;
-        media_container = itemView.findViewById(R.id.video_layout);
+        /*media_container = itemView.findViewById(R.id.video_layout);*/
         thumbnail = itemView.findViewById(R.id.cover);
         progressBar = itemView.findViewById(R.id.progressBar);
 

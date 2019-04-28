@@ -43,5 +43,6 @@
     <string name="collab_click">Collab button is click</string>
     <string name="load_data">Load data</string>
     <string name="click_save">Click to save video!</string>
+    <string name="camera_check">Camera is required to use this app</string>
 
 </resources>
