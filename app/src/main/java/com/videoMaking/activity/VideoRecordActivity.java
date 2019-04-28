@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Build;
@@ -55,6 +56,7 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
     private String mOutputFilePath;
     private TextView remainSecond;
     private ImageView playVideo;
+    private  CountDownTimer waitTimer;
 
 
     public Camera getCameraInstance() {
@@ -82,6 +84,11 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
             if (checkCameraHardware(this)) {
                 if (isPlayVideo) {
                     stopVideoRecording();
+                    if (waitTimer != null) {
+                        waitTimer.cancel();
+                        waitTimer = null;
+                        remainSecond.setVisibility(View.GONE);
+                    }
                     Toast.makeText(this, "stop video ", Toast.LENGTH_SHORT).show();
                 } else {
                     startVideoRecording();
@@ -108,14 +115,14 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
         mCamera.stopPreview();
         mMediaRecorder.stop();
         mMediaRecorder.reset();
+        RelativeLayout relativeLayout = findViewById(R.id.relative_bottom);
+        relativeLayout.setVisibility(View.GONE);
 
         if (mVideoView.getVisibility() == View.GONE) {
             playVideo.setVisibility(View.VISIBLE);
             mVideoView.setVideoPath(mOutputFilePath);
             mVideoView.setOnCompletionListener(mp -> playVideo.setVisibility(View.VISIBLE));
             playVideo.setOnClickListener(v -> {
-                RelativeLayout relativeLayout = findViewById(R.id.relative_bottom);
-                relativeLayout.setVisibility(View.GONE);
                 mVideoView.setVisibility(View.VISIBLE);
                 playVideo.setVisibility(View.GONE);
                 MediaController mediaController = new MediaController(this);
@@ -270,22 +277,25 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
 
         if (mMediaRecorder == null)
             mMediaRecorder = new MediaRecorder();
-
+        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_720P);
         mMediaRecorder.setPreviewDisplay(surface);
 //        setCameraDisplayOrientation();
-        mMediaRecorder.setOrientationHint(90);
         mMediaRecorder.setCamera(mCamera);
+        mMediaRecorder.setOrientationHint(90);
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.DEFAULT);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-        mMediaRecorder.setVideoEncodingBitRate(512 * 1000);
-        mMediaRecorder.setVideoFrameRate(30);
-        mMediaRecorder.setVideoSize(720, 480);
-        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-        mMediaRecorder.setMaxDuration(7000);
         mCurrentFile = createVideoFile();
         mMediaRecorder.setOutputFile(mCurrentFile.getAbsolutePath());
+       // mMediaRecorder.setVideoEncodingBitRate(1280*720);
+        mMediaRecorder.setAudioEncodingBitRate(profile.audioBitRate);
+        mMediaRecorder.setVideoFrameRate(30);
+        mMediaRecorder.setVideoSize(profile.videoFrameWidth, profile.videoFrameHeight);
+        mMediaRecorder.setVideoEncodingBitRate(profile.videoBitRate);
+        //mMediaRecorder.setVideoSize(720, 480);
+        mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        mMediaRecorder.setMaxDuration(7000);
 
         try {
             mMediaRecorder.prepare();
@@ -311,12 +321,12 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
         File img = File.createTempFile(fileName, ".mp4", storageDir);
         //store the current path of the image for later use
         String currentPath = img.getAbsolutePath();
-       // Log.i(TAG, "createImageFile: " + currentPath);
+         Log.i(TAG, "createImageFile: " + currentPath);
         return img;
     }
 
     private void startCountDownTimer() {
-        CountDownTimer waitTimer = new CountDownTimer(8000, 1000) {
+         waitTimer = new CountDownTimer(8000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 remainSecond.setText(String.valueOf(millisUntilFinished / 1000));
@@ -325,6 +335,7 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
 
             public void onFinish() {
                 remainSecond.setText(getString(R.string.click_save));
+                mCamera.stopPreview();
             }
         }.start();
     }

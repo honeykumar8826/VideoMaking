@@ -66,8 +66,6 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     private static final String TAG = "HomeActivity";
     private final String[] permissionList = {Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA};
-    private final String INTERNAL_PATH = "/storage/emulated/0/Android/data/com.videoMaking/files";
-    private final String FOLDER_NAME = "/ShortClipVideo";
     @BindView(R.id.like_active)
     ImageView likeActive;
     @BindView(R.id.feed_reuse)
@@ -118,6 +116,8 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     }
 
     private List<VideoInfo> getAllVideoList() {
+        String INTERNAL_PATH = "/storage/emulated/0/Android/data/com.videoMaking/files";
+        String FOLDER_NAME = "/ShortClipVideo";
         File folder = new File(INTERNAL_PATH + FOLDER_NAME);
         File[] listOfFiles = folder.listFiles();
         if (listOfFiles != null) {
