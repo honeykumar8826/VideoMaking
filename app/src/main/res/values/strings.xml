@@ -1,31 +1,16 @@
 <resources>
     <string name="app_name">VideoMaking</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="username">Username</string>
     <string name="name">Name</string>
     <string name="likes">Likes</string>
     <string name="_287">287</string>
     <string name="_122k">122k</string>
     <string name="reuse">Reuse</string>
-    <string name="message_need_permission">Need Permissions</string>
-    <string name="message_permission">This app needs permission to use this feature. You can grant them in app settings.</string>
-    <string name="title_go_to_setting">GOTO SETTINGS</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-
-    <string name="play_stop">Play or Stop</string>
-    <!--empty state-->
-    <string name="empty_screen">Oops!! An unexpected error occurred</string>
-    <string name="please_retry">Please retry after sometime</string>
-    <string name="retry">Retry</string>
     <string name="friends">FRIENDS</string>
     <string name="popular">POPULAR</string>
     <string name="collab">COLLAB</string>
     <string name="todo">TODO</string>
     <string name="_7s">7s</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="ok">Ok</string>
     <string name="cancel">Cancel</string>
     <string name="audio_permission">Record Audio permission is required</string>
@@ -44,5 +29,14 @@
     <string name="load_data">Load data</string>
     <string name="click_save">Click to save video!</string>
     <string name="camera_check">Camera is required to use this app</string>
+    <string name="share">Share</string>
+    <string name="message">Message</string>
+    <string name="whatsapp">WhatsApp</string>
+    <string name="instagram">Instagram</string>
+    <string name="copy_link">Copy Link</string>
+    <string name="facebook">Facebook</string>
+    <string name="report_video">Report Video</string>
+    <string name="save">Save</string>
+
 
 </resources>

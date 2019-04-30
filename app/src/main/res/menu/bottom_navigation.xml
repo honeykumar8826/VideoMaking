@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/menu_home"
         android:icon="@drawable/ic_tab_bar_home_active"
-        android:title="@null"
-        />
+        android:title="@null" />
     <item
         android:id="@+id/menu_search"
         android:icon="@drawable/ic_tab_bar_search_inactive"
@@ -19,7 +18,7 @@
     <item
         android:id="@+id/menu_notification"
         android:icon="@drawable/ic_tab_bar_notifications_inactive"
-        android:title="@null"/>
+        android:title="@null" />
     <item
         android:id="@+id/menu_NA"
         android:icon="@drawable/ic_tab_bar_my_profile_inactive"

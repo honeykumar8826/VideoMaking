@@ -58,8 +58,6 @@ public class VideoPlayerRecyclerView extends RecyclerView {
     private SimpleExoPlayer videoPlayer;
     /*variables*/
     private List<VideoInfo> videoInfoList = new ArrayList<>();
-    private int videoSurfaceDefaultHeight = 0;
-    private int screenDefaultHeight = 0;
     private Context context;
     private int playPosition = -1;
     private boolean isVideoViewAdded;
@@ -81,25 +79,19 @@ public class VideoPlayerRecyclerView extends RecyclerView {
 
     private void init(Context context) {
         this.context = context.getApplicationContext();
-        Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        Point point = new Point();
-        display.getSize(point);
-        videoSurfaceDefaultHeight = point.x;
-        screenDefaultHeight = point.y;
-
         videoSurfaceView = new PlayerView(this.context);
+        // fit the video according to the screen automatically by this line
         videoSurfaceView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
-
+        // this is used to setup the exoPlayer
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelection.Factory videoTrackSelectionFactory =
                 new AdaptiveTrackSelection.Factory(bandwidthMeter);
         TrackSelector trackSelector =
                 new DefaultTrackSelector(videoTrackSelectionFactory);
-
         // 2. Create the player
         videoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector);
         // Bind the player to the view.
-        videoSurfaceView.setUseController(false);
+        videoSurfaceView.setUseController(false); // use to disable the default exoPlayer controller
         videoSurfaceView.setPlayer(videoPlayer);
 
         addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -112,7 +104,6 @@ public class VideoPlayerRecyclerView extends RecyclerView {
                     if (thumbnail != null) { // show the old thumbnail
                         thumbnail.setVisibility(VISIBLE);
                     }
-
                     // There's a special case when the end of the list has been reached.
                     // Need to handle that with this bit of logic
                     if (!recyclerView.canScrollVertically(1)) {
@@ -140,7 +131,6 @@ public class VideoPlayerRecyclerView extends RecyclerView {
                 if (viewHolderParent != null && viewHolderParent.equals(view)) {
                     resetVideoView();
                 }
-
             }
         });
 
@@ -223,7 +213,6 @@ public class VideoPlayerRecyclerView extends RecyclerView {
             }
         });
     }
-
     public void playVideo(boolean isEndOfList) {
 
         int targetPosition;
@@ -231,26 +220,11 @@ public class VideoPlayerRecyclerView extends RecyclerView {
         if (!isEndOfList) {
             int startPosition = ((LinearLayoutManager) Objects.requireNonNull(getLayoutManager())).findFirstVisibleItemPosition();
             int endPosition = ((LinearLayoutManager) getLayoutManager()).findLastVisibleItemPosition();
-
-            // if there is more than 2 list-items on the screen, set the difference to be 1
-            if (endPosition - startPosition > 1) {
-                endPosition = startPosition + 1;
-            }
-
             // something is wrong. return.
             if (startPosition < 0 || endPosition < 0) {
                 return;
             }
-
-            // if there is more than 1 list-item on the screen
-            if (startPosition != endPosition) {
-                int startPositionVideoHeight = getVisibleVideoSurfaceHeight(startPosition);
-                int endPositionVideoHeight = getVisibleVideoSurfaceHeight(endPosition);
-
-                targetPosition = startPositionVideoHeight > endPositionVideoHeight ? startPosition : endPosition;
-            } else {
-                targetPosition = startPosition;
-            }
+            targetPosition = startPosition;
         } else {
             targetPosition = videoInfoList.size() - 1;
         }
@@ -267,7 +241,6 @@ public class VideoPlayerRecyclerView extends RecyclerView {
         if (videoSurfaceView == null) {
             return;
         }
-
         // remove any old surface views from previously playing videos
         videoSurfaceView.setVisibility(INVISIBLE);
         removeVideoView(videoSurfaceView);
@@ -287,22 +260,11 @@ public class VideoPlayerRecyclerView extends RecyclerView {
         thumbnail = holder.thumbnail;
         progressBar = holder.progressBar;
         viewHolderParent = holder.itemView;
-        RequestManager requestManager = holder.requestManager;
         frameLayout = holder.itemView.findViewById(R.id.video_layout);
-
         videoSurfaceView.setPlayer(videoPlayer);
-
-        /* viewHolderParent.setOnClickListener(videoViewClickListener);*/
 
         DataSource.Factory dataSourceFactory = new DefaultDataSourceFactory(
                 context, Util.getUserAgent(context, "RecyclerView VideoPlayer"));
-/*    String coverUrl = videoInfoList.get(targetPosition).getCoverUrl();
-    if (coverUrl != null) {
-      MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
-              .createMediaSource(Uri.parse(coverUrl));
-      videoPlayer.prepare(videoSource);
-      videoPlayer.setPlayWhenReady(true);
-    }*/
         String mediaUrl = videoInfoList.get(targetPosition).getUrl();
         if (mediaUrl != null) {
             MediaSource videoSource = new ExtractorMediaSource.Factory(dataSourceFactory)
@@ -311,43 +273,19 @@ public class VideoPlayerRecyclerView extends RecyclerView {
             videoPlayer.setPlayWhenReady(true);
         }
     }
-
-    private int getVisibleVideoSurfaceHeight(int playPosition) {
-        int at = playPosition - ((LinearLayoutManager) Objects.requireNonNull(getLayoutManager())).findFirstVisibleItemPosition();
-        Log.d(TAG, "getVisibleVideoSurfaceHeight: at: " + at);
-
-        View child = getChildAt(at);
-        if (child == null) {
-            return 0;
-        }
-
-        int[] location = new int[2];
-        child.getLocationInWindow(location);
-
-        if (location[1] < 0) {
-            return location[1] + videoSurfaceDefaultHeight;
-        } else {
-            return screenDefaultHeight - location[1];
-        }
-    }
-
-
     // Remove the old player
     private void removeVideoView(PlayerView videoView) {
         ViewGroup parent = (ViewGroup) videoView.getParent();
         if (parent == null) {
             return;
         }
-
         int index = parent.indexOfChild(videoView);
         if (index >= 0) {
             parent.removeViewAt(index);
             isVideoViewAdded = false;
             viewHolderParent.setOnClickListener(null);
         }
-
     }
-
     private void addVideoView() {
         frameLayout.addView(videoSurfaceView);
         isVideoViewAdded = true;
@@ -356,7 +294,6 @@ public class VideoPlayerRecyclerView extends RecyclerView {
         videoSurfaceView.setAlpha(1);
         thumbnail.setVisibility(GONE);
     }
-
     private void resetVideoView() {
         if (isVideoViewAdded) {
             removeVideoView(videoSurfaceView);
@@ -379,10 +316,10 @@ public class VideoPlayerRecyclerView extends RecyclerView {
         if (videoSurfaceView != null) {
             removeVideoView(videoSurfaceView);
             videoPlayer.stop();
-//            videoSurfaceView = null;
             videoPlayer.seekTo(0);
         }
     }
+
     public void onRestartPlayer() {
         if (videoSurfaceView == null) {
             playPosition = -1;

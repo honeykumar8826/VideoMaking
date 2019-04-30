@@ -4,9 +4,9 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorPrimary">#016E9A</color>
     <color name="colorAccent">#016E9A</color>
-    <color name="grey_60">#666666</color>
     <color name="gray_3">#017F92</color>
     <color name="white_color">#ffffff</color>
     <color name="white">#3C3E3F</color>
     <color name="gray_8">#424242</color>
+    <color name="gray_300">#E0E0E0</color>
 </resources>

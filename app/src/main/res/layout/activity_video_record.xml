@@ -21,6 +21,15 @@
         android:id="@+id/surfaceView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <ImageView
+        android:id="@+id/switch_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_camera_camera_flip"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/spacing_8"
+        android:layout_marginTop="@dimen/spacing_8"
+        />
 
     <ImageView
         android:id="@+id/mPlayVideo"
@@ -57,7 +66,7 @@
             android:weightSum="3">
 
             <ImageView
-                android:id="@+id/cam_switch"
+                android:id="@+id/camera_flash"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -65,7 +74,7 @@
                 android:layout_marginEnd="@dimen/spacing_8"
                 android:layout_weight="1"
                 android:background="@null"
-                android:src="@drawable/ic_camera_camera_flip" />
+                android:src="@drawable/ic_camera_flash" />
 
             <ImageView
                 android:id="@+id/button_capture"

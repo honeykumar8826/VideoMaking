@@ -7,8 +7,12 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+    <!--for using the style on a fragment dialog-->
     <style name="CustomDialog" parent="AppTheme">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowCloseOnTouchOutside">true</item>
+    </style>
+    <style name="ButtonGray">
+        <item name="colorButtonNormal">@color/gray_3</item>
     </style>
 </resources>

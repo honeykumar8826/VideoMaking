@@ -12,4 +12,5 @@
         android:contentDescription="@string/todo"
         android:padding="@dimen/spacing_4"
         android:src="@drawable/placeholder" />
+
 </RelativeLayout>

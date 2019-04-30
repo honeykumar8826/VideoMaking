@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -22,8 +23,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -61,7 +64,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class HomeActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+public class HomeActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private static final String API_KEY = "9e5ef71432c64196a16273c85cfb94c1";
     private static final String TAG = "HomeActivity";
     private final String[] permissionList = {Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -83,13 +86,18 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     @BindView(R.id.recycles_profile)
     RecyclerView recyclerViewNews;
     private VideoPlayerRecyclerAdapter mAdapter;
+    // not use butterKnife because  initialization is needed of recyclerView
     private VideoPlayerRecyclerView mRecyclerView;
     private List<VideoInfo> videoInfoList = new ArrayList<>();
+    //not use butterKnife because showing only image when permission not granted
     private ImageView permissionImg;
     private BottomNavigationView bottomNavigationView;
     private FragmentManager fragmentManager;
     private int isPermissionGrant = 0;
     private boolean isExist = false;
+    private BottomSheetDialog bottomSheetDialog;
+    private TextView message, whatsapp, instagram, facebook, copyLink, reportVideo, save;
+    private Button closeBottomSheet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +113,6 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             initRecyclerView();
             if (isNetworkConnected()) {// for News Api Result
                 callNewsApi();
-                // Toast.makeText(context, "internet connected", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(HomeActivity.this, "internet disconnected", Toast.LENGTH_SHORT).show();
             }
@@ -114,20 +121,11 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 permissionImg.setVisibility(View.GONE);
                 /*because first time video will not play if it recyclerView will not initialize*/
                 initRecyclerView();
-                // code will execute after the permission
-                Log.i(TAG, "permission else part ");
-                //  ButterKnife.bind(this);
-                // bottomNavigationView.setOnNavigationItemSelectedListener(this);
-            /*    if (isNetworkConnected()) {// for News Api Result
-                    callNewsApi();
-                } else {
-                    Toast.makeText(HomeActivity.this, "internet disconnected", Toast.LENGTH_SHORT).show();
-                }*/
             }
         }
-
     }
 
+    // get the all video list from the private app directory
     private List<VideoInfo> getAllVideoList() {
         String INTERNAL_PATH = "/storage/emulated/0/Android/data/com.videoMaking/files";
         String FOLDER_NAME = "/ShortClipVideo";
@@ -151,13 +149,16 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         permissionImg = findViewById(R.id.permission_image);
         backgroundImg = findViewById(R.id.background_image);
+        createBottomSheet();
     }
 
+    // if internet is not available give the toast
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
     }
 
+    // setup the recylerview
     private void initRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -168,6 +169,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         pagerSnapHelper.attachToRecyclerView(mRecyclerView);
     }
 
+    // setup the glide
     private RequestManager initGlide() {
         RequestOptions options = new RequestOptions()
                 .placeholder(R.drawable.white_img)
@@ -177,7 +179,9 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 .setDefaultRequestOptions(options);
     }
 
-    //
+    /**
+     * getting external storage permission
+     */
     public void externalStoragePermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!hasPermissions(HomeActivity.this, permissionList)) {
@@ -286,6 +290,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 .show();
     }
 
+    // hit the api and get the data
     private void callNewsApi() {
         recyclerViewNews.setLayoutManager(new LinearLayoutManager(this, LinearLayout.HORIZONTAL, true));
         //swipeRefreshLayout.setRefreshing(true);
@@ -320,14 +325,13 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                                 recyclerViewNews.setAdapter(imageLoadAdapter);
                                 imageLoadAdapter.notifyDataSetChanged();
                             } else {
-                                // Log.i(TAG, "JsonArray item is zero ");
+                                // Log.i(TAG, "else part: ");
                             }
-                            // Log.i(TAG, "jsonArray: " + jsonArray.length());
                         } else {
-                            // Log.i(TAG, "else part: ");
+
+                            Log.i(TAG, "else part: wrong status code");
                         }
                     }
-                    // Log.i(TAG, "onResponse:1 " + status + "" + totalItem);
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (JSONException e) {
@@ -342,7 +346,6 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 } else {
                     Toast.makeText(HomeActivity.this, "Some Big Issue", Toast.LENGTH_SHORT).show();
                 }
-
                 // swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -409,14 +412,43 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 addReuseRecordFragment();
                 break;
             case R.id.feed_option:
-                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-                sharingIntent.setType("text/plain");
-                startActivity(sharingIntent);
+
+                showBottomSheetDialog();
                 break;
             default:
                 Toast.makeText(HomeActivity.this, R.string.wrong_selection, Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    private void showBottomSheetDialog() {
+
+        bottomSheetDialog.show();
+    }
+
+    private void createBottomSheet() {
+        if (bottomSheetDialog == null) {
+            View view = LayoutInflater.from(this).inflate(R.layout.bottom_sheet_layout, null);
+            message = view.findViewById(R.id.tv_message);
+            whatsapp = view.findViewById(R.id.tv_whatsApp);
+            instagram = view.findViewById(R.id.tv_instagram);
+            facebook = view.findViewById(R.id.tv_facebook);
+            save = view.findViewById(R.id.tv_save);
+            reportVideo = view.findViewById(R.id.report_video);
+            copyLink = view.findViewById(R.id.tv_copy_link);
+            closeBottomSheet = view.findViewById(R.id.btn_cancel);
+            message.setOnClickListener(this);
+            whatsapp.setOnClickListener(this);
+            instagram.setOnClickListener(this);
+            facebook.setOnClickListener(this);
+            save.setOnClickListener(this);
+            reportVideo.setOnClickListener(this);
+            copyLink.setOnClickListener(this);
+            closeBottomSheet.setOnClickListener(this);
+            bottomSheetDialog = new BottomSheetDialog(this);
+            bottomSheetDialog.setContentView(view);
+        }
+
     }
 
     private void addLikeRecordFragment() {
@@ -466,6 +498,45 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         isExist = true;
         Toast.makeText(this, getString(R.string.press_again_exit), Toast.LENGTH_SHORT).show();
         new Handler().postDelayed(() -> isExist = false, DELAY_TIME);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tv_message:
+                Toast.makeText(HomeActivity.this, getString(R.string.message), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.tv_whatsApp:
+                Toast.makeText(HomeActivity.this, getString(R.string.whatsapp), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.tv_instagram:
+                Toast.makeText(HomeActivity.this, getString(R.string.instagram), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.tv_copy_link:
+                Toast.makeText(HomeActivity.this, getString(R.string.copy_link), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.tv_facebook:
+                Toast.makeText(HomeActivity.this, "Facebook", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.report_video:
+                Toast.makeText(HomeActivity.this, getString(R.string.profile), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.tv_save:
+                Toast.makeText(HomeActivity.this, getString(R.string.profile), Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.btn_cancel:
+                shutBottomSheet();
+                break;
+            default:
+                Toast.makeText(HomeActivity.this, getString(R.string.wrong_selection), Toast.LENGTH_SHORT).show();
+                break;
+        }
+
+    }
+
+    private void shutBottomSheet() {
+        bottomSheetDialog.dismiss();
+
     }
 }
 

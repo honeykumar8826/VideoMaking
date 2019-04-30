@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+
 import com.bumptech.glide.RequestManager;
 import com.videoMaking.R;
 import com.videoMaking.modal.VideoInfo;
@@ -19,11 +20,10 @@ public class VideoPlayerViewHolder extends RecyclerView.ViewHolder {
 
     public VideoPlayerViewHolder(@NonNull View itemView) {
         super(itemView);
-        parent =itemView;
+        parent = itemView;
         /*media_container = itemView.findViewById(R.id.video_layout);*/
         thumbnail = itemView.findViewById(R.id.cover);
         progressBar = itemView.findViewById(R.id.progressBar);
-
     }
 
     public void onBind(VideoInfo videoInfo, RequestManager requestManager) {
