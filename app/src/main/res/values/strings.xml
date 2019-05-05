@@ -37,6 +37,11 @@
     <string name="facebook">Facebook</string>
     <string name="report_video">Report Video</string>
     <string name="save">Save</string>
+    <string name="no_video_found">No video Found</string>
+    <string name="bad_request">Bad Request</string>
+    <string name="internet_issue">Internet Issue</string>
+    <string name="big_issue">Some Big Issue</string>
+
 
 
 </resources>

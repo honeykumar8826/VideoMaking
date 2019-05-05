@@ -11,9 +11,10 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical" />
+            android:orientation="vertical"
+            android:background="@drawable/ic_no_video"/>
 
-        <ImageView
+ <!--       <ImageView
             android:id="@+id/background_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -24,7 +25,7 @@
             android:scaleType="fitXY"
             android:src="@drawable/ic_no_video"
             android:visibility="gone"
-            tools:visibility="visible" />
+            tools:visibility="visible" />-->
 
         <ImageView
             android:id="@+id/permission_image"
@@ -55,6 +56,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/friends"
+                android:background="?selectableItemBackground"
                 android:textColor="@color/white_color" />
 
             <TextView
@@ -64,6 +66,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/popular"
+                android:background="?selectableItemBackground"
                 android:textColor="@drawable/tabitem_selection_color" />
 
             <TextView
@@ -73,6 +76,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/collab"
+                android:background="?selectableItemBackground"
                 android:textColor="@drawable/tabitem_selection_color" />
         </LinearLayout>
 

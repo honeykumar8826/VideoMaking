@@ -103,8 +103,8 @@
         android:id="@+id/btn_cancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@null"
-        android:foreground="?attr/selectableItemBackground"
+        android:background="?selectableItemBackground"
+
         android:text="@string/cancel"
         android:textColor="@color/colorPrimary"
         android:theme="@style/ButtonGray" />

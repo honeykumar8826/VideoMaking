@@ -1,7 +1,6 @@
 package com.videoMaking.playVideo;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,15 +8,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-
-import com.bumptech.glide.RequestManager;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.PlaybackParameters;
@@ -93,7 +88,7 @@ public class VideoPlayerRecyclerView extends RecyclerView {
         // Bind the player to the view.
         videoSurfaceView.setUseController(false); // use to disable the default exoPlayer controller
         videoSurfaceView.setPlayer(videoPlayer);
-
+        
         addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -123,7 +118,8 @@ public class VideoPlayerRecyclerView extends RecyclerView {
         addOnChildAttachStateChangeListener(new OnChildAttachStateChangeListener() {
             @Override
             public void onChildViewAttachedToWindow(View view) {
-
+                Log.i(TAG, "onChildViewAttachedToWindow: ");
+                playVideo(false);
             }
 
             @Override
@@ -137,16 +133,17 @@ public class VideoPlayerRecyclerView extends RecyclerView {
         videoPlayer.addListener(new Player.EventListener() {
             @Override
             public void onTimelineChanged(Timeline timeline, @Nullable Object manifest, int reason) {
-
+                Log.i(TAG, "onTimelineChanged: ");
             }
 
             @Override
             public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-
+                Log.i(TAG, "onTracksChanged: ");
             }
 
             @Override
             public void onLoadingChanged(boolean isLoading) {
+                Log.i(TAG, "onLoadingChanged: ");
 
             }
 
@@ -184,31 +181,32 @@ public class VideoPlayerRecyclerView extends RecyclerView {
 
             @Override
             public void onRepeatModeChanged(int repeatMode) {
-
+                Log.i(TAG, "onRepeatModeChanged: ");
             }
 
             @Override
             public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
-
+                Log.i(TAG, "onShuffleModeEnabledChanged: ");
             }
 
             @Override
             public void onPlayerError(ExoPlaybackException error) {
-
+                Log.i(TAG, "onPlayerError: ");
             }
 
             @Override
             public void onPositionDiscontinuity(int reason) {
-
+                Log.i(TAG, "onPositionDiscontinuity: ");
             }
 
             @Override
             public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-
+                Log.i(TAG, "onPlaybackParametersChanged: ");
             }
 
             @Override
             public void onSeekProcessed() {
+                Log.i(TAG, "onSeekProcessed: ");
 
             }
         });

@@ -3,10 +3,8 @@ package com.videoMaking.holder;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-
 import com.bumptech.glide.RequestManager;
 import com.videoMaking.R;
 import com.videoMaking.modal.VideoInfo;
@@ -15,8 +13,7 @@ public class VideoPlayerViewHolder extends RecyclerView.ViewHolder {
     /*public FrameLayout media_container;*/
     public ImageView thumbnail;
     public ProgressBar progressBar;
-    public View parent;
-    public RequestManager requestManager;
+    private View parent;
 
     public VideoPlayerViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -27,9 +24,8 @@ public class VideoPlayerViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void onBind(VideoInfo videoInfo, RequestManager requestManager) {
-        this.requestManager = requestManager;
         parent.setTag(this);
-        this.requestManager
+        requestManager
                 .load(videoInfo.getCoverUrl())
                 .into(thumbnail);
     }

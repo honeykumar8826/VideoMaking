@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -50,6 +51,8 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
     TextView remainSecond;
     @BindView(R.id.mPlayVideo)
     ImageView playVideo;
+    @BindView(R.id.discard_video)
+    ImageView discardVideo;
     int currentCameraId = 0;
     private Camera mCamera;
     private ImageView switchCam;
@@ -60,6 +63,9 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
     private String mOutputFilePath;
     private CountDownTimer waitTimer;
     private int i = 0;
+    private boolean isVideoPreview = false;
+    private boolean isOnPauseExe = false;
+
 
     public Camera getCameraInstance() {
         try {
@@ -74,15 +80,52 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_record);
+        Log.i(TAG, "onCreate: ");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        init();
-        // Create our Preview view and set it as the content of our activity.
-        mHolder = mSurfaceView.getHolder();
-        mHolder.addCallback(this);
+        Log.i(TAG, "onStart: ");
+        // because in onPause i am not releasing the camera and mediaRecorder so stucking the camera after on Restart.
+        if (mHolder == null) {
+            init();
+            mHolder = mSurfaceView.getHolder();
+            mHolder.addCallback(this);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isOnPauseExe = true;
+        // shutdown();
+        Log.i(TAG, "onPause: ");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume: ");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i(TAG, "onStop: ");
+
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.i(TAG, "onRestart: ");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "onDestroy: ");
     }
 
     private void init() {
@@ -105,10 +148,22 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
         if (mVideoView.getVisibility() == View.GONE) {
             playVideo.setVisibility(View.VISIBLE);
             mVideoView.setVideoPath(mOutputFilePath);
-            mVideoView.setOnCompletionListener(mp -> playVideo.setVisibility(View.VISIBLE));
+            mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    playVideo.setVisibility(View.VISIBLE);
+                    isVideoPreview = true;
+                    if (isVideoPreview) {
+                        discardVideo.setVisibility(View.VISIBLE);
+
+                    }
+
+                }
+            });
             playVideo.setOnClickListener(v -> {
                 mVideoView.setVisibility(View.VISIBLE);
                 playVideo.setVisibility(View.GONE);
+                discardVideo.setVisibility(View.GONE);
                 MediaController mediaController = new MediaController(this);
                 mVideoView.setMediaController(mediaController);
                 mVideoView.start();
@@ -153,7 +208,8 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
+    public void surfaceDestroyed(SurfaceHolder holder)
+    {
         shutdown();
     }
 
@@ -171,7 +227,6 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
         } else {
             mMediaRecorder.setOrientationHint(90);
         }
-
         mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.DEFAULT);
         mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
@@ -193,13 +248,14 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
         startCountDownTimer();
         mMediaRecorder.start();
     }
-
     private void shutdown() {
+        mHolder=null;
         mMediaRecorder.reset();
         mMediaRecorder.release();
         mCamera.release();
         mMediaRecorder = null;
         mCamera = null;
+
     }
 
     private File createVideoFile() throws IOException {
@@ -226,7 +282,8 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
         }.start();
     }
 
-    @OnClick({R.id.button_capture, R.id.camera_flash, R.id.open_gallery, R.id.switch_camera})
+    @OnClick({R.id.button_capture, R.id.camera_flash, R.id.open_gallery, R.id.switch_camera
+            , R.id.discard_video})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.button_capture:
@@ -267,9 +324,24 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
             case R.id.switch_camera:
                 switchCamera();
                 break;
+            case R.id.discard_video:
+                discardVideo();
+                break;
             default:
                 Toast.makeText(VideoRecordActivity.this, R.string.wrong_selection, Toast.LENGTH_SHORT).show();
                 break;
+        }
+    }
+
+    private void discardVideo() {
+        File fdelete = new File(mCurrentFile.getAbsolutePath());
+        if (fdelete.exists()) {
+            if (fdelete.delete()) {
+                Toast.makeText(this, "file Deleted Successfully :", Toast.LENGTH_SHORT).show();
+                this.recreate();
+            } else {
+                Toast.makeText(this, "file not Deleted :", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
