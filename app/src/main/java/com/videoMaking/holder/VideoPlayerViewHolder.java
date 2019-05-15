@@ -18,7 +18,6 @@ public class VideoPlayerViewHolder extends RecyclerView.ViewHolder {
     public VideoPlayerViewHolder(@NonNull View itemView) {
         super(itemView);
         parent = itemView;
-        /*media_container = itemView.findViewById(R.id.video_layout);*/
         thumbnail = itemView.findViewById(R.id.cover);
         progressBar = itemView.findViewById(R.id.progressBar);
     }

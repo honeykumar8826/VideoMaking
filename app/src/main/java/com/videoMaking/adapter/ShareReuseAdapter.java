@@ -30,11 +30,6 @@ public class ShareReuseAdapter extends RecyclerView.Adapter<ShareReuseAdapter.Sh
     @Override
     public ShareReuseViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.share_reuse_list_layout, viewGroup, false);
-        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        int width = windowManager.getDefaultDisplay().getWidth();
-        int height = windowManager.getDefaultDisplay().getHeight();
-        view.setLayoutParams(new RecyclerView.LayoutParams(width, RecyclerView.LayoutParams.MATCH_PARENT));
-        view.setLayoutParams(new RecyclerView.LayoutParams(height, RecyclerView.LayoutParams.WRAP_CONTENT));
         return new ShareReuseAdapter.ShareReuseViewHolder(view);
     }
 

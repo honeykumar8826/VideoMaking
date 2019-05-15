@@ -23,8 +23,8 @@
         tools:targetApi="n"
         android:fullBackupContent="true">
         <activity android:name=".activity.VideoRecordActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTop"/>
+            android:screenOrientation="portrait"/>
+           <!-- android:launchMode="singleTop"-->
         <activity
             android:name=".activity.HomeActivity"
             android:screenOrientation="portrait">

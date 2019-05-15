@@ -20,7 +20,7 @@
         android:icon="@drawable/ic_tab_bar_notifications_inactive"
         android:title="@null" />
     <item
-        android:id="@+id/menu_NA"
+        android:id="@+id/menu_profile"
         android:icon="@drawable/ic_tab_bar_my_profile_inactive"
         android:title="@null" />
 </menu>

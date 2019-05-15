@@ -24,9 +24,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/*
- * A simple {@link Fragment} subclass.
- */
 public class SharePostFragment extends DialogFragment {
     @BindView(R.id.recycles_reuse)
     RecyclerView recyclerView;

@@ -41,7 +41,11 @@
     <string name="bad_request">Bad Request</string>
     <string name="internet_issue">Internet Issue</string>
     <string name="big_issue">Some Big Issue</string>
-
+    <string name="internet_disconnected">internet disconnected</string>
+    <string name="permission_automatically_grant">permission automatically granted</string>
+    <string name="storage_permission_not_grant">Storage Permission not granted</string>
+    <string name="camera_permission_required">Camera permission is required to access camera</string>
+    <string name="camera_permission_not_grant">Camera Permission not granted</string>
 
 
 </resources>

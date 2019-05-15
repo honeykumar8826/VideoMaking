@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
@@ -65,7 +66,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
     private static final String API_KEY = "9e5ef71432c64196a16273c85cfb94c1";
-    private static final String TAG = "HomeActivity";
+    // private static final String TAG = "HomeActivity";
     private final String[] permissionList = {Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA};
     @BindView(R.id.like_active)
@@ -111,7 +112,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             if (isNetworkConnected()) {// for News Api Result
                 callNewsApi();
             } else {
-                Toast.makeText(HomeActivity.this, "internet disconnected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeActivity.this, getString(R.string.internet_disconnected), Toast.LENGTH_SHORT).show();
             }
         } else {
             if (isPermissionGrant == 0) {
@@ -122,7 +123,9 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         }
     }
 
-    // get the all video list from the private app directory
+    /**
+     * get the all video list from the private app directory
+     */
     private List<VideoInfo> getAllVideoList() {
         String INTERNAL_PATH = "/storage/emulated/0/Android/data/com.videoMaking/files";
         String FOLDER_NAME = "/ShortClipVideo";
@@ -135,10 +138,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                 videoInfo.setCoverUrl("");
                 videoInfoList.add(videoInfo);
             }
-        } /*else {
-            Toast.makeText(this, "No Video Found", Toast.LENGTH_SHORT).show();
-            //  backgroundImg.setVisibility(View.VISIBLE);
-        }*/
+        }
         return videoInfoList;
     }
 
@@ -156,7 +156,9 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         return cm.getActiveNetworkInfo() != null;
     }
 
-    // setup the recylerview
+    /**
+     * setup the recylerview
+     */
     private void initRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -167,7 +169,9 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         pagerSnapHelper.attachToRecyclerView(mRecyclerView);
     }
 
-    // setup the glide
+    /**
+     * setup the glide
+     */
     private RequestManager initGlide() {
         RequestOptions options = new RequestOptions()
                 .placeholder(R.drawable.white_img)
@@ -189,18 +193,14 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             }
         } else {
             isPermissionGrant = 1;
-            Toast.makeText(this, "permission automatically granted", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.permission_automatically_grant), Toast.LENGTH_SHORT).show();
         }
     }
 
     private boolean hasPermissions(Context context, String... permissions) {
-        int count = 0;
         if (context != null && permissions != null) {
-            Log.i(TAG, "hasPermissions: " + permissions.length);
             for (String permission : permissions) {
                 if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    count++;
-                    Log.i(TAG, "hasPermissions: " + count);
                     return false;
                 }
             }
@@ -226,7 +226,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                                 finish();
                             });
                 } else {
-                    Toast.makeText(this, "Storage Permission not granted", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.storage_permission_not_grant), Toast.LENGTH_SHORT).show();
                 }
             } else if (grantResults[1] == -1) {
                 permissionImg.setVisibility(View.VISIBLE);
@@ -246,8 +246,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             } else if (grantResults[2] == -1) {
                 permissionImg.setVisibility(View.VISIBLE);
                 if (!ActivityCompat.shouldShowRequestPermissionRationale(HomeActivity.this, Manifest.permission.CAMERA)) {
-                    Log.i(TAG, "shouldShowRequestPermissionRationale:");
-                    showMessageOkCancel("Camera permission is required to access camera",
+                    showMessageOkCancel(getString(R.string.camera_permission_required),
                             (dialog, which) -> {
                                 Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -257,24 +256,20 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
                                 finish();
                             });
                 } else {
-                    Toast.makeText(this, "Camera Permission not granted ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.camera_permission_not_grant), Toast.LENGTH_SHORT).show();
                 }
             } else {
                 if (isPermissionGrant == 0) {
                     permissionImg.setVisibility(View.GONE);
                     // code will execute after the permission
-                    Log.i(TAG, "permission else part ");
                     ButterKnife.bind(this);
                     bottomNavigationView.setOnNavigationItemSelectedListener(this);
                     if (isNetworkConnected()) {// for News Api Result
                         callNewsApi();
                     } else {
-                        Toast.makeText(HomeActivity.this, "internet disconnected", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(HomeActivity.this, R.string.internet_disconnected, Toast.LENGTH_SHORT).show();
                     }
                 }
-                //
-                // Toast.makeText(this, " Permissions  granted ", Toast.LENGTH_SHORT).show();
-
             }
         }
     }
@@ -352,7 +347,6 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i(TAG, "onPause: ");
         mRecyclerView.onPausePlayer();
     }
 
@@ -361,7 +355,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
         super.onResume();
         videoInfoList.clear();
         List<VideoInfo> getVideoList = getAllVideoList();
-        if (getVideoList != null && getVideoList.size()>0 && mAdapter != null) {
+        if (getVideoList != null && getVideoList.size() > 0 && mAdapter != null) {
             //backgroundImg.setVisibility(View.GONE);
             mAdapter.notifyDataSetChanged();
             mRecyclerView.onRestartPlayer();
@@ -477,7 +471,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.menu_notification:
                 Toast.makeText(HomeActivity.this, getString(R.string.navigation), Toast.LENGTH_SHORT).show();
                 return true;
-            case R.id.menu_NA:
+            case R.id.menu_profile:
                 Toast.makeText(HomeActivity.this, getString(R.string.profile), Toast.LENGTH_SHORT).show();
                 return true;
             default:

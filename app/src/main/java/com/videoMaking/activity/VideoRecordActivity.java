@@ -64,8 +64,6 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
     private CountDownTimer waitTimer;
     private int i = 0;
     private boolean isVideoPreview = false;
-    private boolean isOnPauseExe = false;
-
 
     public Camera getCameraInstance() {
         try {
@@ -80,54 +78,17 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_record);
-        Log.i(TAG, "onCreate: ");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i(TAG, "onStart: ");
-        // because in onPause i am not releasing the camera and mediaRecorder so stucking the camera after on Restart.
         if (mHolder == null) {
             init();
             mHolder = mSurfaceView.getHolder();
             mHolder.addCallback(this);
         }
     }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        isOnPauseExe = true;
-        // shutdown();
-        Log.i(TAG, "onPause: ");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i(TAG, "onResume: ");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        Log.i(TAG, "onStop: ");
-
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        Log.i(TAG, "onRestart: ");
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.i(TAG, "onDestroy: ");
-    }
-
     private void init() {
         ButterKnife.bind(this);
         switchCam = findViewById(R.id.switch_camera);
@@ -204,7 +165,7 @@ public class VideoRecordActivity extends AppCompatActivity implements SurfaceHol
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        Log.i(TAG, "surfaceChanged: in degree " + width + "height" + height);
+        //Log.i(TAG, "surfaceChanged: in degree " + width + "height" + height);
     }
 
     @Override
